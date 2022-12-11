@@ -1,0 +1,7 @@
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = func_projectile_shooter : "Projectile shooter"
+[
+	spawnflags(flags) =
+	[
+		1 : "Timed mode" : 0
+	]
+]
