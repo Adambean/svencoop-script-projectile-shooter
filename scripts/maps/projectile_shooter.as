@@ -6,10 +6,7 @@
  * The projectile can be made up of a model and/or sprite with a set speed, weight, and damage (amount and type) on
  * impact.
  *
- * See accompanying "projectile_shooter.fgd" for usage.
- *
- * If you are including this script in your own map script via `#include` you must add `ProjectileShooter::Init();` to
- * your script's `MapInit()` function.
+ * See accompanying "README.md" and "projectile_shooter.fgd" for usage.
  */
 
 /**
