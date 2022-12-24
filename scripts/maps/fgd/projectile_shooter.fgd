@@ -2,8 +2,8 @@
 [
 	spawnflags(flags) =
 	[
-		1 : "Start on" : 0
-		2 : "Timed mode" : 0
+		1 : "Timed mode" : 0
+		2 : "Timed mode: Start on" : 0
 	]
 	fire_timer(string) : "Time Between Fires" : "4"
 
@@ -19,7 +19,6 @@
 	sprite_vp_type(choices) : "Projectile: Sprite Draw Type / Orientation" : 0 =
 	[
 		0: "Default"
-		// These reflect the VP_ types in the sprite but are +1'd, so 0 can mean default
 		3: "Parallel"
 		1: "Parallel Upright"
 		5: "Parallel Orientated"
@@ -35,7 +34,7 @@
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
 		3 : "Large (~1536)"
-		4 : "Everywhere"
+		0 : "Everywhere"
 	]
 
 	speed(integer) : "Projectile: Speed (units per second)" : 64
@@ -80,7 +79,7 @@
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
 		3 : "Large (~1536)"
-		4 : "Everywhere"
+		0 : "Everywhere"
 	]
 
 	impact_target(target_source) : "On Impact: Trigger"
@@ -97,6 +96,6 @@
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
 		3 : "Large (~1536)"
-		4 : "Everywhere"
+		0 : "Everywhere"
 	]
 ]
