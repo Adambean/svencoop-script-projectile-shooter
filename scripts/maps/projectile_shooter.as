@@ -2,10 +2,6 @@
  * General purpose "func_projectile_shooter" and "env_projectile" entities.
  * By Adam "Adambean" Reece
  *
- * This is a point entity that will create and launch a projectile, either by trigger (cyclic) or timed.
- * The projectile can be made up of a model and/or sprite with a set speed, gravity, drag, and damage (amount and type)
- * on impact.
- *
  * See accompanying "README.md" and "projectile_shooter.fgd" for usage.
  */
 
@@ -401,13 +397,13 @@ namespace ProjectileShooter
             Precache();
 
             if (self.IsBSPModel()) {
-                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity cannot be a brush, removing.\n");
+                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity at %1 cannot be a brush, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
                 return;
             }
 
             if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
-                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity must have at least a model or sprite, removing.\n");
+                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity at %1 must have at least a model or sprite, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
                 return;
             }
@@ -417,6 +413,9 @@ namespace ProjectileShooter
                 self.pev.nextthink = g_Engine.time;
                 SetThink(ThinkFunction(this.TimedThink));
             }
+
+            self.pev.movetype   = MOVETYPE_NONE;
+            self.pev.solid      = SOLID_NOT;
         }
 
         /**
@@ -870,13 +869,13 @@ namespace ProjectileShooter
         void Spawn()
         {
             if (self.IsBSPModel()) {
-                g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity cannot be a brush, removing.\n");
+                g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity at %1 cannot be a brush, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
                 return;
             }
 
             if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
-                g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity must have at least a model or sprite, removing.\n");
+                g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity at %1 must have at least a model or sprite, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
                 return;
             }
@@ -885,6 +884,8 @@ namespace ProjectileShooter
                 CBaseEntity@ pShooterBase = g_EntityFuncs.Instance(self.pev.owner);
                 if (pShooterBase !is null) {
                     @m_pParent = cast<CFuncProjectileShooter@>(CastToScriptClass(pShooterBase));
+                    g_EntityFuncs.SetOrigin(self, pShooterBase.GetOrigin());
+                    self.pev.angles = pShooterBase.pev.angles;
                 }
             }
 
@@ -899,6 +900,8 @@ namespace ProjectileShooter
             self.pev.velocity       = vecFireDirection * m_flSpeed;
             self.pev.speed          = m_flSpeed;
             self.pev.gravity        = m_flGravity;
+            self.pev.movetype       = MOVETYPE_FLY;
+            self.pev.solid          = SOLID_BBOX;
 
             if (!m_szModel.IsEmpty()) {
                 self.pev.model      = m_szModel;
@@ -970,8 +973,25 @@ namespace ProjectileShooter
          */
         void Touch(CBaseEntity@ pOther)
         {
+            if (!m_szImpactSound.IsEmpty() && m_flSoundVolume > 0.0f) {
+                g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szImpactSound, m_flImpactSoundVolume, m_flImpactSoundRadius);
+            }
+
+            if (!m_szImpactTarget.IsEmpty()) {
+                g_EntityFuncs.ImpactTargets(m_szImpactTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
+            }
+
+            if (pOther !is null) {
+                if (pOther.pev.takedamage != DAMAGE_NO) {
+                    if (m_iDamageType != DMG_GENERIC && m_flDmg != 0.0f) {
+
+                    }
+                }
+            }
+
             SetTouch(null);
             SetThink(null);
+            g_EntityFuncs.Remove(self);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 This script implements an entity for use in maps, `func_projectile_shooter`, which can be used to create and fire arbitrary projectiles either cyclically or repeated on a timer.
 
-The projectiles can consist of a model and/or sprite, a sound for firing and impact, specific speed and weight, damage on impact, and triggers on firing and impact.
+The projectiles can consist of a model or sprite, a sound for firing and impact, specific speed and weight, damage on impact, and triggers on firing and impact.
 
 ## Installation
 
