@@ -448,6 +448,15 @@ namespace ProjectileShooter
         }
 
         /**
+         * Classify.
+         * @return int
+         */
+        int	Classify()
+        {
+            return CLASS_NONE;
+        }
+
+        /**
          * Use handler.
          * @param  CBaseEntity@ pActivator Activator entity
          * @param  CBaseEntity@ pCaller    Caller entity
@@ -915,12 +924,16 @@ namespace ProjectileShooter
                 self.pev.scale      = m_flSpriteScale;
             }
 
-            if (!m_szFireSound.IsEmpty() && m_flSoundVolume > 0.0f) {
+            if (!m_szFireSound.IsEmpty() and m_flFireSoundVolume > 0.0f) {
                 g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szFireSound, m_flFireSoundVolume, m_flFireSoundRadius);
             }
 
             if (!m_szFireTarget.IsEmpty()) {
                 g_EntityFuncs.FireTargets(m_szFireTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iFireTriggerState);
+            }
+
+            if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
+                g_SoundSystem.EmitSound(self.edict(), CHAN_VOICE, m_szSound, m_flSoundVolume, m_flSoundRadius);
             }
 
             SetThink(ThinkFunction(this.Think));
@@ -958,6 +971,15 @@ namespace ProjectileShooter
         }
 
         /**
+         * Classify.
+         * @return int
+         */
+        int	Classify()
+        {
+            return CLASS_NONE;
+        }
+
+        /**
          * Think.
          * @return void
          */
@@ -973,22 +995,42 @@ namespace ProjectileShooter
          */
         void Touch(CBaseEntity@ pOther)
         {
-            if (!m_szImpactSound.IsEmpty() && m_flSoundVolume > 0.0f) {
+            if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
+                g_SoundSystem.StopSound(self.edict(), CHAN_VOICE, m_szSound);
+            }
+
+            if (!m_szImpactSound.IsEmpty() and m_flImpactSoundVolume > 0.0f) {
                 g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szImpactSound, m_flImpactSoundVolume, m_flImpactSoundRadius);
             }
 
             if (!m_szImpactTarget.IsEmpty()) {
-                g_EntityFuncs.ImpactTargets(m_szImpactTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
+                g_EntityFuncs.FireTargets(m_szImpactTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
             }
 
-            if (pOther !is null) {
-                if (pOther.pev.takedamage != DAMAGE_NO) {
-                    if (m_iDamageType != DMG_GENERIC && m_flDmg != 0.0f) {
+            if (pOther !is null and pOther.pev.takedamage != DAMAGE_NO) {
+                TraceResult tr = g_Utility.GetGlobalTrace();
+                entvars_t@ pevOwner = self.pev.owner.vars;
 
+                if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
+                    if (m_flDmg > 0.0f) {
+                        g_WeaponFuncs.ClearMultiDamage();
+                        pOther.TraceAttack(pevOwner, m_flDmg, self.pev.velocity.Normalize(), tr, m_iDamageType);
+                        g_WeaponFuncs.ApplyMultiDamage(self.pev, pevOwner);
+                    } else {
+                        pOther.TakeHealth(-m_flDmg, m_iDamageType);
+                    }
+                }
+
+                if (m_flArmorDmg != 0.0f) {
+                    if (m_flArmorDmg > 0.0f) {
+                        pOther.pev.armorvalue = Math.max(pOther.pev.armorvalue - m_flArmorDmg, 0);
+                    } else {
+                        pOther.pev.armorvalue = Math.min(pOther.pev.armorvalue - m_flArmorDmg, pOther.pev.armortype);
                     }
                 }
             }
 
+            self.pev.velocity = g_vecZero;;
             SetTouch(null);
             SetThink(null);
             g_EntityFuncs.Remove(self);
