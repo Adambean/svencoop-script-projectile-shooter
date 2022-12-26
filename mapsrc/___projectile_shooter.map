@@ -2102,6 +2102,7 @@
 "impact_sound_radius" "1"
 "dmg" "20"
 "impact_sound" "debris/glass3.wav"
+"sprite" "sprites/nhth1.spr"
 "origin" "-320.000000 290.000000 -80.000000"
 }
 {
@@ -2114,10 +2115,10 @@
 "model_sequencename" "idle"
 "model_scale" "1"
 "sprite_framerate" "10.0"
-"sprite_scale" "1"
+"sprite_scale" "0.5"
 "sound_volume" "10"
-"minhullsize" "-64 -64 -64"
-"maxhullsize" "64 64 64"
+"minhullsize" "-32 -32 -32"
+"maxhullsize" "32 32 32"
 "speed" "64"
 "gravity" "1"
 "drag" "1"
@@ -2129,6 +2130,7 @@
 "impact_sound_radius" "3"
 "fire_sound" "weapons/splauncher_fire.wav"
 "impact_sound" "weapons/splauncher_impact.wav"
+"sprite" "sprites/SGflash.spr"
 "origin" "-224.000000 290.000000 -80.000000"
 }
 {
