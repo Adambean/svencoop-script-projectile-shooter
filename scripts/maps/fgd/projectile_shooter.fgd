@@ -1,4 +1,4 @@
-@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = func_projectile_shooter : "Projectile shooter"
+@PointClass base(Targetname, Angles, RenderFields) size(-8 -8 -8, 8 8 8) = func_projectile_shooter : "Projectile shooter"
 [
 	spawnflags(flags) =
 	[
@@ -14,7 +14,7 @@
 	model_sequence(integer) : "Projectile: Model Sequence Number (overrides name)" : 0
 	model_scale(string) : "Projectile: Model Scale" : "1"
 
-	sprite(string) : "Projectile: Sprite" : ""
+	sprite(sprite) : "Projectile: Sprite" : ""
 	sprite_framerate(string) : "Projectile: Sprite Framerate" : "10.0"
 	sprite_vp_type(choices) : "Projectile: Sprite Draw Type / Orientation" : 0 =
 	[
@@ -29,7 +29,7 @@
 
 	sound(sound) : "Projectile: Sound"
 	sound_volume(integer) : "Projectile: Sound Volume (10 = loudest)" : 10
-	sound_radius(choices) : "Projectile: Sound Radius" : 0 =
+	sound_radius(choices) : "Projectile: Sound Radius" : 2 =
 	[
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
@@ -37,7 +37,11 @@
 		0 : "Everywhere"
 	]
 
+	minhullsize(string) : "Projectile: Min hull size (X Y Z)" : "0 0 0"
+	maxhullsize(string) : "Projectile: Max hull size (X Y Z)" : "0 0 0"
 	speed(integer) : "Projectile: Speed (units per second)" : 64
+	gravity(string) : "Projectile: Gravity" : "1"
+	drag(string) : "Projectile: Drag" : "1"
 	dmg(integer) : "Projectile: Damage" : 10
 	armordmg(integer) : "Projectile: Armor Damage" : 0
 	damagetype(choices) : "Projectile: Damage Type" : 0 =
@@ -66,7 +70,7 @@
 	]
 
 	fire_target(target_source) : "On Fire: Trigger"
-	fire_triggerstate(choices) : "On Fire: Trigger State" : 0 =
+	fire_triggerstate(choices) : "On Fire: Trigger State" : 2 =
 	[
 		0: "Off"
 		1: "On"
@@ -74,7 +78,7 @@
 	]
 	fire_sound(sound) : "On Fire: Sound"
 	fire_sound_volume(integer) : "On Fire: Sound Volume (10 = loudest)" : 10
-	fire_sound_radius(choices) : "On Fire: Sound Radius" : 0 =
+	fire_sound_radius(choices) : "On Fire: Sound Radius" : 2 =
 	[
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
@@ -83,7 +87,7 @@
 	]
 
 	impact_target(target_source) : "On Impact: Trigger"
-	impact_triggerstate(choices) : "On Impact: Trigger State" : 0 =
+	impact_triggerstate(choices) : "On Impact: Trigger State" : 2 =
 	[
 		0: "Off"
 		1: "On"
@@ -91,7 +95,7 @@
 	]
 	impact_sound(sound) : "On Impact: Sound"
 	impact_sound_volume(integer) : "On Impact: Sound Volume (10 = loudest)" : 10
-	impact_sound_radius(choices) : "On Impact: Sound Radius" : 0 =
+	impact_sound_radius(choices) : "On Impact: Sound Radius" : 2 =
 	[
 		1 : "Small (~384)"
 		2 : "Medium (~768)"

@@ -8,16 +8,12 @@ The projectiles can consist of a model and/or sprite, a sound for firing and imp
 
 This script needs to be at game path "scripts/maps/projectile-shooter". Then in a map do **one** of the following:
 
-### With an entity
-
-Add a `trigger_script` entity pointing to file "projectile-shooter". (No function to call.)
-
 ### With your map configuration
 
 Add a line to your map configuration entry:
 
 ```
-map_script projectile-shooter
+map_script projectile_shooter
 ```
 
 ### Include in your existing map script
@@ -25,7 +21,7 @@ map_script projectile-shooter
 If you have a main map script you can include this script as follows:
 
 ```
-#include projectile-shooter
+#include projectile_shooter
 ```
 
 However if your map script has a `MapInit()` function you must also call the projectile shooter initialisation in there, for example:
