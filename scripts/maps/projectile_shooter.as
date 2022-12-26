@@ -218,6 +218,15 @@ namespace ProjectileShooter
          */
 
         /**
+         * Object capabilities
+         * @return int
+         */
+        int ObjectCaps()
+        {
+            return 0;
+        }
+
+        /**
          * Key value data handler.
          * @param  string szKey   Key
          * @param  string szValue Value
@@ -394,8 +403,6 @@ namespace ProjectileShooter
          */
         void Spawn()
         {
-            Precache();
-
             if (self.IsBSPModel()) {
                 g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity at %1 cannot be a brush, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
@@ -407,6 +414,8 @@ namespace ProjectileShooter
                 g_EntityFuncs.Remove(self);
                 return;
             }
+
+            self.Precache();
 
             if (m_fTimed = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED)) {
                 m_fState = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED_START_ON);
@@ -424,8 +433,6 @@ namespace ProjectileShooter
          */
         void Precache()
         {
-            BaseClass.Precache();
-
             if (!m_szModel.IsEmpty()) {
                 g_Game.PrecacheModel(self, m_szModel);
             }
@@ -706,6 +713,15 @@ namespace ProjectileShooter
          */
 
         /**
+         * Object capabilities
+         * @return int
+         */
+        int ObjectCaps()
+        {
+            return 0;
+        }
+
+        /**
          * Key value data handler.
          * @param  string szKey   Key
          * @param  string szValue Value
@@ -889,6 +905,8 @@ namespace ProjectileShooter
                 return;
             }
 
+            self.Precache();
+
             if (self.pev.owner !is null) {
                 CBaseEntity@ pShooterBase = g_EntityFuncs.Instance(self.pev.owner);
                 if (pShooterBase !is null) {
@@ -906,20 +924,21 @@ namespace ProjectileShooter
             g_EntityFuncs.SetOrigin(self, vecFireOrigin);
             g_EntityFuncs.SetSize(self.pev, m_vecMins, m_vecMaxs);
             self.pev.angles         = vecFireAngles;
-            self.pev.velocity       = vecFireDirection * m_flSpeed;
+            self.pev.velocity       = vecFireAngles * m_flSpeed;
+            self.pev.avelocity.z    = m_flSpeed;
             self.pev.speed          = m_flSpeed;
             self.pev.gravity        = m_flGravity;
-            self.pev.movetype       = MOVETYPE_FLY;
+            self.pev.movetype       = MOVETYPE_STEP;
             self.pev.solid          = SOLID_BBOX;
 
             if (!m_szModel.IsEmpty()) {
-                self.pev.model      = m_szModel;
+                g_EntityFuncs.SetModel(self, m_szModel);
                 self.pev.skin       = m_iModelSkin;
                 self.pev.body       = m_iModelBody;
                 self.pev.sequence   = !m_szModelSequenceName.IsEmpty() ? self.LookupSequence(m_szModelSequenceName) : m_iModelSequence;
                 self.pev.scale      = m_flModelScale;
             } else if (!m_szSprite.IsEmpty()) {
-                self.pev.model      = m_szSprite;
+                g_EntityFuncs.SetModel(self, m_szSprite);
                 self.pev.framerate  = m_flSpriteFramerate;
                 self.pev.scale      = m_flSpriteScale;
             }
@@ -947,8 +966,6 @@ namespace ProjectileShooter
          */
         void Precache()
         {
-            BaseClass.Precache();
-
             if (!m_szModel.IsEmpty()) {
                 g_Game.PrecacheModel(self, m_szModel);
             }
