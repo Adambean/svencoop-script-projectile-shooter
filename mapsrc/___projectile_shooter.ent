@@ -689,7 +689,7 @@
   "rendermode" "5"
   "angles" "0.000000 90.000000 0.000000"
   "targetname" "projectile_firealley"
-  "spawnflags" "1"
+  "spawnflags" "3"
   "classname" "func_projectile_shooter"
 }
 {
