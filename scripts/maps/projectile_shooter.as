@@ -521,41 +521,41 @@ namespace ProjectileShooter
             dictionary dProjectile = {
                 {"origin",                  self.pev.origin.ToString()},
                 {"angles",                  self.pev.angles.ToString()},
-                {"rendermode",              self.pev.rendermode},
-                {"renderamt",               self.pev.renderamt},
+                {"rendermode",              formatUInt(self.pev.rendermode)},
+                {"renderamt",               formatFloat(self.pev.renderamt)},
                 {"rendercolor",             self.pev.rendercolor.ToString()},
-                {"renderfx",                self.pev.renderfx},
+                {"renderfx",                formatUInt(self.pev.renderfx)},
                 {"model",                   m_szModel},
-                {"model_skin",              m_iModelSkin},
-                {"model_body",              m_iModelBody},
+                {"model_skin",              formatUInt(m_iModelSkin)},
+                {"model_body",              formatUInt(m_iModelBody)},
                 {"model_sequencename",      m_szModelSequenceName},
-                {"model_sequence",          m_iModelSequence},
-                {"model_scale",             m_flModelScale},
+                {"model_sequence",          formatInt(m_iModelSequence)},
+                {"model_scale",             formatFloat(m_flModelScale)},
                 {"sprite",                  m_szSprite},
-                {"sprite_framerate",        m_flSpriteFramerate},
-                {"sprite_vp_type",          m_iSpriteVpType},
-                {"sprite_scale",            m_flSpriteScale},
+                {"sprite_framerate",        formatFloat(m_flSpriteFramerate)},
+                {"sprite_vp_type",          formatUInt(m_iSpriteVpType)},
+                {"sprite_scale",            formatFloat(m_flSpriteScale)},
                 {"sound",                   m_szSound},
-                {"sound_volume",            m_flSoundVolume},
-                {"sound_radius",            m_flSoundRadius},
+                {"sound_volume",            formatFloat(m_flSoundVolume)},
+                {"sound_radius",            formatFloat(m_flSoundRadius)},
                 {"minhullsize",             m_vecMins.ToString()},
                 {"maxhullsize",             m_vecMaxs.ToString()},
-                {"speed",                   m_flSpeed},
-                {"gravity",                 m_flGravity},
-                {"drag",                    m_flDrag},
-                {"dmg",                     m_flDmg},
-                {"armordmg",                m_flArmorDmg},
-                {"damagetype",              m_iDamageType},
+                {"speed",                   formatFloat(m_flSpeed)},
+                {"gravity",                 formatFloat(m_flGravity)},
+                {"drag",                    formatFloat(m_flDrag)},
+                {"dmg",                     formatFloat(m_flDmg)},
+                {"armordmg",                formatFloat(m_flArmorDmg)},
+                {"damagetype",              formatUInt(m_iDamageType)},
                 {"fire_target",             m_szFireTarget},
-                {"fire_triggerstate",       m_iFireTriggerState},
+                {"fire_triggerstate",       formatUInt(m_iFireTriggerState)},
                 {"fire_sound",              m_szFireSound},
-                {"fire_sound_volume",       m_flFireSoundVolume},
-                {"fire_sound_radius",       m_flFireSoundRadius},
+                {"fire_sound_volume",       formatFloat(m_flFireSoundVolume)},
+                {"fire_sound_radius",       formatFloat(m_flFireSoundRadius)},
                 {"impact_target",           m_szImpactTarget},
-                {"impact_triggerstate",     m_iImpactTriggerState},
+                {"impact_triggerstate",     formatUInt(m_iImpactTriggerState)},
                 {"impact_sound",            m_szImpactSound},
-                {"impact_sound_volume",     m_flImpactSoundVolume},
-                {"impact_sound_radius",     m_flImpactSoundRadius}
+                {"impact_sound_volume",     formatFloat(m_flImpactSoundVolume)},
+                {"impact_sound_radius",     formatFloat(m_flImpactSoundRadius)}
             };
 
             CBaseEntity@ pProjectileBase = g_EntityFuncs.CreateEntity("env_projectile", dProjectile, false);
@@ -876,14 +876,16 @@ namespace ProjectileShooter
             }
 
             if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
-                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity must have at least a model or sprite, removing.\n");
+                g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity must have at least a model or sprite, removing.\n");
                 g_EntityFuncs.Remove(self);
                 return;
             }
 
             if (self.pev.owner !is null) {
                 CBaseEntity@ pShooterBase = g_EntityFuncs.Instance(self.pev.owner);
-                m_pParent = cast<CFuncProjectileShooter@>(CastToScriptClass(pShooterBase));
+                if (pShooterBase !is null) {
+                    @m_pParent = cast<CFuncProjectileShooter@>(CastToScriptClass(pShooterBase));
+                }
             }
 
             Vector vecFireOrigin    = self.pev.origin;
