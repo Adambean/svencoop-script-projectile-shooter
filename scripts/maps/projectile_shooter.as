@@ -126,7 +126,7 @@ namespace ProjectileShooter
         int m_iModelSequence = 0;
 
         /** @var float m_flModelScale Projectile: Model scale. */
-        int m_flModelScale = 1.0;
+        float m_flModelScale = 1.0;
 
         // Projectile: Sprite
 
@@ -275,7 +275,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "sprite_vp_type") {
-                m_iSpriteVpType = cast<MAP_VP_TYPE>(atoi(szValue));
+                m_iSpriteVpType = MAP_VP_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -300,7 +300,12 @@ namespace ProjectileShooter
             }
 
             if (szKey == "minhullsize") {
-                m_vecMins = ;
+                g_Utility.StringToVector(m_vecMins, szValue);
+                return true;
+            }
+
+            if (szKey == "maxhullsize") {
+                g_Utility.StringToVector(m_vecMaxs, szValue);
                 return true;
             }
 
@@ -330,7 +335,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "damagetype") {
-                m_iDamageType = cast<DMG_TYPE>(atoi(szValue));
+                m_iDamageType = DMG(atoi(szValue));
                 return true;
             }
 
@@ -340,7 +345,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "fire_triggerstate") {
-                m_iFireTriggerState = cast<USE_TYPE>(atoi(szValue));
+                m_iFireTriggerState = USE_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -365,7 +370,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "impact_triggerstate") {
-                m_iImpactTriggerState = cast<USE_TYPE>(atoi(szValue));
+                m_iImpactTriggerState = USE_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -401,18 +406,16 @@ namespace ProjectileShooter
                 return;
             }
 
-            if (m_szModel.isEmpty() and m_szSprite.isEmpty()) {
+            if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
                 g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity must have at least a model or sprite, removing.\n");
                 g_EntityFuncs.Remove(self);
                 return;
             }
 
-            m_fTimed = (self.pev.spawnflags & ProjectileShooter::SF_TIMED);
-            m_fState = (self.pev.spawnflags & ProjectileShooter::SF_TIMED_START_ON and m_fTimed);
-
-            if (m_fTimed) {
-                SetThink(ThinkFunction(this.TimedThink));
+            if (m_fTimed = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED)) {
+                m_fState = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED_START_ON);
                 self.pev.nextthink = g_Engine.time;
+                SetThink(ThinkFunction(this.TimedThink));
             }
         }
 
@@ -424,24 +427,24 @@ namespace ProjectileShooter
         {
             BaseClass.Precache();
 
-            if (!m_szModel.isEmpty()) {
-                g_Game.PrecacheModel(this, m_szModel);
+            if (!m_szModel.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szModel);
             }
 
-            if (!m_szSprite.isEmpty()) {
-                g_Game.PrecacheModel(this, m_szSprite);
+            if (!m_szSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szSprite);
             }
 
-            if (!m_szSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szSound);
+            if (!m_szSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szSound);
             }
 
-            if (!m_szFireSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szFireSound);
+            if (!m_szFireSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szFireSound);
             }
 
-            if (!m_szImpactSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szImpactSound);
+            if (!m_szImpactSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szImpactSound);
             }
         }
 
@@ -555,9 +558,9 @@ namespace ProjectileShooter
                 {"impact_sound_radius",     m_flImpactSoundRadius}
             };
 
-            CBaseEntity pProjectileBase = g_EntityFuncs.CreateEntity("env_projectile", dProjectile, false);
+            CBaseEntity@ pProjectileBase = g_EntityFuncs.CreateEntity("env_projectile", dProjectile, false);
             CEnvProjectile@ pProjectile = cast<CEnvProjectile@>(CastToScriptClass(pProjectileBase));
-            pProjectile.pev.owner = edict();
+            @pProjectile.pev.owner = self.edict();
             g_EntityFuncs.DispatchSpawn(pProjectile.self.edict());
 
             return pProjectile;
@@ -570,7 +573,7 @@ namespace ProjectileShooter
      * Entity: env_projectile
      * A projectile that has been fired from a `func_projectile_shooter`.
      */
-    final class CEnvProjectile : ScriptBaseEntity
+    final class CEnvProjectile : ScriptBaseAnimating
     {
         /*
         ------------------------------------------------------------------------
@@ -578,6 +581,7 @@ namespace ProjectileShooter
         ------------------------------------------------------------------------
          */
 
+        /** @var CFuncProjectileShooter@|null m_pParent Projectile shooter entity. */
         CFuncProjectileShooter@ m_pParent;
 
         // Model
@@ -598,7 +602,7 @@ namespace ProjectileShooter
         int m_iModelSequence = 0;
 
         /** @var float m_flModelScale Model scale. */
-        int m_flModelScale = 1.0;
+        float m_flModelScale = 1.0;
 
         // Sprite
 
@@ -742,7 +746,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "sprite_vp_type") {
-                m_iSpriteVpType = cast<MAP_VP_TYPE>(atoi(szValue));
+                m_iSpriteVpType = MAP_VP_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -763,6 +767,16 @@ namespace ProjectileShooter
 
             if (szKey == "sound_radius") {
                 m_flSoundRadius = ProjectileShooter::SoundRadiusOptionToAttenuation(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "minhullsize") {
+                g_Utility.StringToVector(m_vecMins, szValue);
+                return true;
+            }
+
+            if (szKey == "maxhullsize") {
+                g_Utility.StringToVector(m_vecMaxs, szValue);
                 return true;
             }
 
@@ -792,7 +806,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "damagetype") {
-                m_iDamageType = cast<DMG_TYPE>(atoi(szValue));
+                m_iDamageType = DMG(atoi(szValue));
                 return true;
             }
 
@@ -802,7 +816,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "fire_triggerstate") {
-                m_iFireTriggerState = cast<USE_TYPE>(atoi(szValue));
+                m_iFireTriggerState = USE_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -827,7 +841,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "impact_triggerstate") {
-                m_iImpactTriggerState = cast<USE_TYPE>(atoi(szValue));
+                m_iImpactTriggerState = USE_TYPE(atoi(szValue));
                 return true;
             }
 
@@ -861,31 +875,47 @@ namespace ProjectileShooter
                 return;
             }
 
-            if (pev.owner) {
-                CBaseEntity@ pShooterBase = CBaseEntity::Instance(pev.owner);
+            if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
+                g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity must have at least a model or sprite, removing.\n");
+                g_EntityFuncs.Remove(self);
+                return;
+            }
+
+            if (self.pev.owner !is null) {
+                CBaseEntity@ pShooterBase = g_EntityFuncs.Instance(self.pev.owner);
                 m_pParent = cast<CFuncProjectileShooter@>(CastToScriptClass(pShooterBase));
             }
 
-            self.pev.origin         = vecFireOrigin;
-            g_EntityFuncs.SetOrigin(self, self.pev.origin);
-            g_EntityFuncs.SetSize(self.pev, g_vecZero, g_vecZero);
-
             Vector vecFireOrigin    = self.pev.origin;
             Vector vecFireAngles    = self.pev.angles;
-            Math.MakeVectors(vecFireAngles);
-            self.pev.angles         = vecFireAngles;
-
             Vector vecFireDirection = g_Engine.v_forward;
+            Math.MakeVectors(vecFireAngles);
+
+            g_EntityFuncs.SetOrigin(self, vecFireOrigin);
+            g_EntityFuncs.SetSize(self.pev, m_vecMins, m_vecMaxs);
+            self.pev.angles         = vecFireAngles;
             self.pev.velocity       = vecFireDirection * m_flSpeed;
             self.pev.speed          = m_flSpeed;
             self.pev.gravity        = m_flGravity;
 
-            if (m_szFireSound && m_flSoundVolume > 0.0f) {
-                g_SoundSystem.EmitSound(edict(), CHAN_AUTO, m_szFireSound, m_flFireSoundVolume, m_flFireSoundRadius);
+            if (!m_szModel.IsEmpty()) {
+                self.pev.model      = m_szModel;
+                self.pev.skin       = m_iModelSkin;
+                self.pev.body       = m_iModelBody;
+                self.pev.sequence   = !m_szModelSequenceName.IsEmpty() ? self.LookupSequence(m_szModelSequenceName) : m_iModelSequence;
+                self.pev.scale      = m_flModelScale;
+            } else if (!m_szSprite.IsEmpty()) {
+                self.pev.model      = m_szSprite;
+                self.pev.framerate  = m_flSpriteFramerate;
+                self.pev.scale      = m_flSpriteScale;
             }
 
-            if (m_szFireTarget) {
-                g_EntityFuncs.FireTargets(m_szFireTarget, m_pParent ? m_pParent : this, this, m_iFireTriggerState);
+            if (!m_szFireSound.IsEmpty() && m_flSoundVolume > 0.0f) {
+                g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szFireSound, m_flFireSoundVolume, m_flFireSoundRadius);
+            }
+
+            if (!m_szFireTarget.IsEmpty()) {
+                g_EntityFuncs.FireTargets(m_szFireTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iFireTriggerState);
             }
 
             SetThink(ThinkFunction(this.Think));
@@ -901,24 +931,24 @@ namespace ProjectileShooter
         {
             BaseClass.Precache();
 
-            if (!m_szModel.isEmpty()) {
-                g_Game.PrecacheModel(this, m_szModel);
+            if (!m_szModel.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szModel);
             }
 
-            if (!m_szSprite.isEmpty()) {
-                g_Game.PrecacheModel(this, m_szSprite);
+            if (!m_szSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szSprite);
             }
 
-            if (!m_szSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szSound);
+            if (!m_szSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szSound);
             }
 
-            if (!m_szFireSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szFireSound);
+            if (!m_szFireSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szFireSound);
             }
 
-            if (!m_szImpactSound.isEmpty()) {
-                g_SoundEngine.PrecacheSound(this, m_szImpactSound);
+            if (!m_szImpactSound.IsEmpty()) {
+                g_SoundSystem.PrecacheSound(self, m_szImpactSound);
             }
         }
 
