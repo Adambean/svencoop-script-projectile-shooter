@@ -473,6 +473,11 @@ namespace ProjectileShooter
                 return;
             }
 
+            string szModel = self.pev.model;
+            if (!szModel.IsEmpty()) {
+                m_szModel = szModel;
+            }
+
             if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
                 g_Game.AlertMessage(at_warning, "[CFuncProjectileShooter] Entity at %1 must have at least a model or sprite, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
@@ -506,7 +511,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szSound);
+                g_SoundSystem.PrecacheSound(m_szSound);
             }
 
             if (!m_szImpactSprite.IsEmpty()) {
@@ -514,7 +519,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szFireSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szFireSound);
+                g_SoundSystem.PrecacheSound(m_szFireSound);
             }
 
             if (!m_szFireSprite.IsEmpty()) {
@@ -522,7 +527,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szImpactSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szImpactSound);
+                g_SoundSystem.PrecacheSound(m_szImpactSound);
             }
         }
 
@@ -1043,6 +1048,11 @@ namespace ProjectileShooter
                 return;
             }
 
+            string szModel = self.pev.model;
+            if (!szModel.IsEmpty()) {
+                m_szModel = szModel;
+            }
+
             if (m_szModel.IsEmpty() and m_szSprite.IsEmpty()) {
                 g_Game.AlertMessage(at_warning, "[CEnvProjectile] Entity at %1 must have at least a model or sprite, removing.\n", self.pev.origin.ToString());
                 g_EntityFuncs.Remove(self);
@@ -1093,8 +1103,8 @@ namespace ProjectileShooter
                     {"angles",      self.pev.angles.ToString()},
                     {"rendermode",  formatUInt(kRenderTransAdd)},
                     {"renderamt",   formatFloat(255.0f)},
-                    {"rendercolor", self.pev.rendercolor.ToString()},
-                    {"renderfx",    formatUInt(self.pev.renderfx)},
+                    {"rendercolor", g_vecZero.ToString()},
+                    {"renderfx",    formatUInt(kRenderFxNone)},
                     {"model",       m_szFireSprite},
                     {"framerate",   formatFloat(m_flFireSpriteFramerate)},
                     {"vp_type",     formatUInt(m_iFireSpriteVpType)},
@@ -1113,7 +1123,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szFireTarget.IsEmpty()) {
-                g_EntityFuncs.FireTargets(m_szFireTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iFireTriggerState);
+                g_EntityFuncs.FireTargets(m_szFireTarget, cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iFireTriggerState);
             }
 
             if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
@@ -1140,7 +1150,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szSound);
+                g_SoundSystem.PrecacheSound(m_szSound);
             }
 
             if (!m_szImpactSprite.IsEmpty()) {
@@ -1148,7 +1158,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szFireSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szFireSound);
+                g_SoundSystem.PrecacheSound(m_szFireSound);
             }
 
             if (!m_szFireSprite.IsEmpty()) {
@@ -1156,7 +1166,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szImpactSound.IsEmpty()) {
-                g_SoundSystem.PrecacheSound(self, m_szImpactSound);
+                g_SoundSystem.PrecacheSound(m_szImpactSound);
             }
         }
 
@@ -1195,8 +1205,8 @@ namespace ProjectileShooter
                     {"angles",      self.pev.angles.ToString()},
                     {"rendermode",  formatUInt(kRenderTransAdd)},
                     {"renderamt",   formatFloat(255.0f)},
-                    {"rendercolor", self.pev.rendercolor.ToString()},
-                    {"renderfx",    formatUInt(self.pev.renderfx)},
+                    {"rendercolor", g_vecZero.ToString()},
+                    {"renderfx",    formatUInt(kRenderFxNone)},
                     {"model",       m_szImpactSprite},
                     {"framerate",   formatFloat(m_flImpactSpriteFramerate)},
                     {"vp_type",     formatUInt(m_iImpactSpriteVpType)},
@@ -1215,7 +1225,7 @@ namespace ProjectileShooter
             }
 
             if (!m_szImpactTarget.IsEmpty()) {
-                g_EntityFuncs.FireTargets(m_szImpactTarget, m_pParent !is null ? cast<CBaseEntity@>(m_pParent) : cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
+                g_EntityFuncs.FireTargets(m_szImpactTarget, cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
             }
 
             if (pOther !is null and pOther.pev.takedamage != DAMAGE_NO) {
