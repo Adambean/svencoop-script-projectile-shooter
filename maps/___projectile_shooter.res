@@ -15,7 +15,6 @@ halflife.wad
 lcd_display.wad
 liquids.wad
 nw.wad
-sound/adamr/blipblipblip.wav
 submerged.wad
 submerged_addons.wad
 xeno.wad
