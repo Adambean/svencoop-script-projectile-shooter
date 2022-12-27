@@ -6,7 +6,7 @@ The projectiles can consist of a model or sprite, a sound for firing and impact,
 
 ## Installation
 
-This script needs to be at game path "scripts/maps/projectile-shooter". Then in a map do **one** of the following:
+This script needs to be at game path "scripts/maps/projectile_shooter". Then in a map do **one** of the following:
 
 ### With your map configuration
 
@@ -43,6 +43,8 @@ void MapInit()
 
 ## Point entity
 
-Add a point entity with classname `func_projectile_shooter`:
+Include "projectile_shooter.fgd" in your favourite map editor, which will provide you with entity "func_projectile_shooter". You can then add this to your map.
+
+Most properties are self explanatory.
 
 *Instructions TBD.*

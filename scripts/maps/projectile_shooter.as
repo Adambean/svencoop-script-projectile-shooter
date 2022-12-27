@@ -183,6 +183,18 @@ namespace ProjectileShooter
         /** @var USE_TYPE m_iFireTriggerState On fire: Trigger state. */
         USE_TYPE m_iFireTriggerState = USE_TOGGLE;
 
+        /** @var string m_szFireSprite On fire: Sprite file. */
+        string m_szFireSprite = "";
+
+        /** @var float m_flFireSpriteFramerate On fire: Sprite frame rate.*/
+        float m_flFireSpriteFramerate = 10.0;
+
+        /** @var MAP_VP_TYPE m_iFireSpriteVpType On fire: Sprite map viewport type. */
+        MAP_VP_TYPE m_iFireSpriteVpType = MAP_VP_DEFAULT;
+
+        /** @var float m_flFireSpriteScale On fire: Sprite scale. */
+        float m_flFireSpriteScale = 1.0;
+
         /** @var string m_szFireSound On fire: Sound file. */
         string m_szFireSound = "";
 
@@ -199,6 +211,18 @@ namespace ProjectileShooter
 
         /** @var USE_TYPE m_iImpactTriggerState On impact: Trigger state. */
         USE_TYPE m_iImpactTriggerState = USE_TOGGLE;
+
+        /** @var string m_szImpactSprite On impact: Sprite file. */
+        string m_szImpactSprite = "";
+
+        /** @var float m_flImpactSpriteFramerate On impact: Sprite frame rate.*/
+        float m_flImpactSpriteFramerate = 10.0;
+
+        /** @var MAP_VP_TYPE m_iImpactSpriteVpType On impact: Sprite map viewport type. */
+        MAP_VP_TYPE m_iImpactSpriteVpType = MAP_VP_DEFAULT;
+
+        /** @var float m_flImpactSpriteScale On impact: Sprite scale. */
+        float m_flImpactSpriteScale = 1.0;
 
         /** @var string m_szImpactSound On impact: Sound file. */
         string m_szImpactSound = "";
@@ -354,6 +378,26 @@ namespace ProjectileShooter
                 return true;
             }
 
+            if (szKey == "fire_sprite") {
+                m_szFireSprite = szValue;
+                return true;
+            }
+
+            if (szKey == "fire_sprite_framerate") {
+                m_flFireSpriteFramerate = Math.max(0.01f, atof(szValue));
+                return true;
+            }
+
+            if (szKey == "fire_sprite_vp_type") {
+                m_iFireSpriteVpType = MAP_VP_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "fire_sprite_scale") {
+                m_flFireSpriteScale = Math.max(0.001f, atof(szValue));
+                return true;
+            }
+
             if (szKey == "fire_sound") {
                 m_szFireTarget = szValue;
                 return true;
@@ -376,6 +420,26 @@ namespace ProjectileShooter
 
             if (szKey == "impact_triggerstate") {
                 m_iImpactTriggerState = USE_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite") {
+                m_szImpactSprite = szValue;
+                return true;
+            }
+
+            if (szKey == "impact_sprite_framerate") {
+                m_flImpactSpriteFramerate = Math.max(0.01f, atof(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite_vp_type") {
+                m_iImpactSpriteVpType = MAP_VP_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite_scale") {
+                m_flImpactSpriteScale = Math.max(0.001f, atof(szValue));
                 return true;
             }
 
@@ -445,8 +509,16 @@ namespace ProjectileShooter
                 g_SoundSystem.PrecacheSound(self, m_szSound);
             }
 
+            if (!m_szImpactSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szImpactSprite);
+            }
+
             if (!m_szFireSound.IsEmpty()) {
                 g_SoundSystem.PrecacheSound(self, m_szFireSound);
+            }
+
+            if (!m_szFireSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szFireSprite);
             }
 
             if (!m_szImpactSound.IsEmpty()) {
@@ -563,11 +635,19 @@ namespace ProjectileShooter
                 {"damagetype",              formatUInt(m_iDamageType)},
                 {"fire_target",             m_szFireTarget},
                 {"fire_triggerstate",       formatUInt(m_iFireTriggerState)},
+                {"fire_sprite",             m_szFireSprite},
+                {"fire_sprite_framerate",   formatFloat(m_flFireSpriteFramerate)},
+                {"fire_sprite_vp_type",     formatUInt(m_iFireSpriteVpType)},
+                {"fire_sprite_scale",       formatFloat(m_flFireSpriteScale)},
                 {"fire_sound",              m_szFireSound},
                 {"fire_sound_volume",       formatFloat(m_flFireSoundVolume)},
                 {"fire_sound_radius",       formatFloat(m_flFireSoundRadius)},
                 {"impact_target",           m_szImpactTarget},
                 {"impact_triggerstate",     formatUInt(m_iImpactTriggerState)},
+                {"impact_sprite",           m_szImpactSprite},
+                {"impact_sprite_framerate", formatFloat(m_flImpactSpriteFramerate)},
+                {"impact_sprite_vp_type",   formatUInt(m_iImpactSpriteVpType)},
+                {"impact_sprite_scale",     formatFloat(m_flImpactSpriteScale)},
                 {"impact_sound",            m_szImpactSound},
                 {"impact_sound_volume",     formatFloat(m_flImpactSoundVolume)},
                 {"impact_sound_radius",     formatFloat(m_flImpactSoundRadius)}
@@ -678,6 +758,18 @@ namespace ProjectileShooter
         /** @var USE_TYPE m_iFireTriggerState On fire: Trigger state. */
         USE_TYPE m_iFireTriggerState = USE_TOGGLE;
 
+        /** @var string m_szFireSprite On fire: Sprite file. */
+        string m_szFireSprite = "";
+
+        /** @var float m_flFireSpriteFramerate On fire: Sprite frame rate.*/
+        float m_flFireSpriteFramerate = 10.0;
+
+        /** @var MAP_VP_TYPE m_iFireSpriteVpType On fire: Sprite map viewport type. */
+        MAP_VP_TYPE m_iFireSpriteVpType = MAP_VP_DEFAULT;
+
+        /** @var float m_flFireSpriteScale On fire: Sprite scale. */
+        float m_flFireSpriteScale = 1.0;
+
         /** @var string m_szFireSound On fire: Sound file. */
         string m_szFireSound = "";
 
@@ -694,6 +786,18 @@ namespace ProjectileShooter
 
         /** @var USE_TYPE m_iImpactTriggerState On impact: Trigger state. */
         USE_TYPE m_iImpactTriggerState = USE_TOGGLE;
+
+        /** @var string m_szImpactSprite On impact: Sprite file. */
+        string m_szImpactSprite = "";
+
+        /** @var float m_flImpactSpriteFramerate On impact: Sprite frame rate.*/
+        float m_flImpactSpriteFramerate = 10.0;
+
+        /** @var MAP_VP_TYPE m_iImpactSpriteVpType On impact: Sprite map viewport type. */
+        MAP_VP_TYPE m_iImpactSpriteVpType = MAP_VP_DEFAULT;
+
+        /** @var float m_flImpactSpriteScale On impact: Sprite scale. */
+        float m_flImpactSpriteScale = 1.0;
 
         /** @var string m_szImpactSound On impact: Sound file. */
         string m_szImpactSound = "";
@@ -844,6 +948,26 @@ namespace ProjectileShooter
                 return true;
             }
 
+            if (szKey == "fire_sprite") {
+                m_szFireSprite = szValue;
+                return true;
+            }
+
+            if (szKey == "fire_sprite_framerate") {
+                m_flFireSpriteFramerate = Math.max(0.01f, atof(szValue));
+                return true;
+            }
+
+            if (szKey == "fire_sprite_vp_type") {
+                m_iFireSpriteVpType = MAP_VP_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "fire_sprite_scale") {
+                m_flFireSpriteScale = Math.max(0.001f, atof(szValue));
+                return true;
+            }
+
             if (szKey == "fire_sound") {
                 m_szFireTarget = szValue;
                 return true;
@@ -866,6 +990,26 @@ namespace ProjectileShooter
 
             if (szKey == "impact_triggerstate") {
                 m_iImpactTriggerState = USE_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite") {
+                m_szImpactSprite = szValue;
+                return true;
+            }
+
+            if (szKey == "impact_sprite_framerate") {
+                m_flImpactSpriteFramerate = Math.max(0.01f, atof(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite_vp_type") {
+                m_iImpactSpriteVpType = MAP_VP_TYPE(atoi(szValue));
+                return true;
+            }
+
+            if (szKey == "impact_sprite_scale") {
+                m_flImpactSpriteScale = Math.max(0.001f, atof(szValue));
                 return true;
             }
 
@@ -943,6 +1087,27 @@ namespace ProjectileShooter
                 self.pev.scale      = m_flSpriteScale;
             }
 
+            if (!m_szFireSprite.IsEmpty()) {
+                dictionary dFireSprite = {
+                    {"origin",      self.pev.origin.ToString()},
+                    {"angles",      self.pev.angles.ToString()},
+                    {"rendermode",  formatUInt(kRenderTransAdd)},
+                    {"renderamt",   formatFloat(255.0f)},
+                    {"rendercolor", self.pev.rendercolor.ToString()},
+                    {"renderfx",    formatUInt(self.pev.renderfx)},
+                    {"model",       m_szFireSprite},
+                    {"framerate",   formatFloat(m_flFireSpriteFramerate)},
+                    {"vp_type",     formatUInt(m_iFireSpriteVpType)},
+                    {"scale",       formatFloat(m_flFireSpriteScale)},
+                    {"spawnflags",  formatUInt(7)}
+                };
+
+                CBaseEntity@ pFireSpriteBase = g_EntityFuncs.CreateEntity("env_sprite", dFireSprite, false);
+                CSprite@ pFireSprite = cast<CSprite@>(pFireSpriteBase);
+                @pFireSprite.pev.owner = self.edict();
+                g_EntityFuncs.DispatchSpawn(pFireSprite.edict());
+            }
+
             if (!m_szFireSound.IsEmpty() and m_flFireSoundVolume > 0.0f) {
                 g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szFireSound, m_flFireSoundVolume, m_flFireSoundRadius);
             }
@@ -978,8 +1143,16 @@ namespace ProjectileShooter
                 g_SoundSystem.PrecacheSound(self, m_szSound);
             }
 
+            if (!m_szImpactSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szImpactSprite);
+            }
+
             if (!m_szFireSound.IsEmpty()) {
                 g_SoundSystem.PrecacheSound(self, m_szFireSound);
+            }
+
+            if (!m_szFireSprite.IsEmpty()) {
+                g_Game.PrecacheModel(self, m_szFireSprite);
             }
 
             if (!m_szImpactSound.IsEmpty()) {
@@ -1014,6 +1187,27 @@ namespace ProjectileShooter
         {
             if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
                 g_SoundSystem.StopSound(self.edict(), CHAN_VOICE, m_szSound);
+            }
+
+            if (!m_szImpactSprite.IsEmpty()) {
+                dictionary dImpactSprite = {
+                    {"origin",      self.pev.origin.ToString()},
+                    {"angles",      self.pev.angles.ToString()},
+                    {"rendermode",  formatUInt(kRenderTransAdd)},
+                    {"renderamt",   formatFloat(255.0f)},
+                    {"rendercolor", self.pev.rendercolor.ToString()},
+                    {"renderfx",    formatUInt(self.pev.renderfx)},
+                    {"model",       m_szImpactSprite},
+                    {"framerate",   formatFloat(m_flImpactSpriteFramerate)},
+                    {"vp_type",     formatUInt(m_iImpactSpriteVpType)},
+                    {"scale",       formatFloat(m_flImpactSpriteScale)},
+                    {"spawnflags",  formatUInt(7)}
+                };
+
+                CBaseEntity@ pImpactSpriteBase = g_EntityFuncs.CreateEntity("env_sprite", dImpactSprite, false);
+                CSprite@ pImpactSprite = cast<CSprite@>(pImpactSpriteBase);
+                @pImpactSprite.pev.owner = self.edict();
+                g_EntityFuncs.DispatchSpawn(pImpactSprite.edict());
             }
 
             if (!m_szImpactSound.IsEmpty() and m_flImpactSoundVolume > 0.0f) {

@@ -76,6 +76,20 @@
 		1: "On"
 		2: "Toggle"
 	]
+
+	fire_sprite(sprite) : "On Fire: Sprite" : ""
+	fire_sprite_framerate(string) : "On Fire: Sprite Framerate" : "10.0"
+	fire_sprite_vp_type(choices) : "On Fire: Sprite Draw Type / Orientation" : 0 =
+	[
+		0: "Default"
+		3: "Parallel"
+		1: "Parallel Upright"
+		5: "Parallel Orientated"
+		2: "Facing Upright"
+		4: "Orientated"
+	]
+	fire_sprite_scale(string) : "On Fire: Sprite Scale" : "1"
+
 	fire_sound(sound) : "On Fire: Sound"
 	fire_sound_volume(integer) : "On Fire: Sound Volume (10 = loudest)" : 10
 	fire_sound_radius(choices) : "On Fire: Sound Radius" : 2 =
@@ -93,6 +107,20 @@
 		1: "On"
 		2: "Toggle"
 	]
+
+	impact_sprite(sprite) : "On Impact: Sprite" : ""
+	impact_sprite_framerate(string) : "On Impact: Sprite Framerate" : "10.0"
+	impact_sprite_vp_type(choices) : "On Impact: Sprite Draw Type / Orientation" : 0 =
+	[
+		0: "Default"
+		3: "Parallel"
+		1: "Parallel Upright"
+		5: "Parallel Orientated"
+		2: "Facing Upright"
+		4: "Orientated"
+	]
+	impact_sprite_scale(string) : "On Impact: Sprite Scale" : "1"
+
 	impact_sound(sound) : "On Impact: Sound"
 	impact_sound_volume(integer) : "On Impact: Sound Volume (10 = loudest)" : 10
 	impact_sound_radius(choices) : "On Impact: Sound Radius" : 2 =
