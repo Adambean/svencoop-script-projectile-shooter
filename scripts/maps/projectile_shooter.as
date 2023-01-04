@@ -22,6 +22,9 @@ namespace ProjectileShooter
     /** @var bool g_isInitialised Is initialised. */
     bool g_isInitialised = false;
 
+    /** @const int Float precision. */
+    const int FLOAT_PRECISION = 8;
+
     /** @const int Fire a projectile repeatedly on a timer until stopped instead of cyclically. */
     const int SF_TIMED = 1<<0;
 
@@ -402,7 +405,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "fire_sound") {
-                m_szFireTarget = szValue;
+                m_szFireSound = szValue;
                 return true;
             }
 
@@ -447,7 +450,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "impact_sound") {
-                m_szImpactTarget = szValue;
+                m_szImpactSound = szValue;
                 return true;
             }
 
@@ -489,14 +492,14 @@ namespace ProjectileShooter
 
             self.Precache();
 
+            self.pev.movetype   = MOVETYPE_NONE;
+            self.pev.solid      = SOLID_NOT;
+
             if (m_fTimed = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED)) {
                 m_fState = self.pev.SpawnFlagBitSet(ProjectileShooter::SF_TIMED_START_ON);
                 self.pev.nextthink = g_Engine.time;
                 SetThink(ThinkFunction(this.TimedThink));
             }
-
-            self.pev.movetype   = MOVETYPE_NONE;
-            self.pev.solid      = SOLID_NOT;
         }
 
         /**
@@ -613,11 +616,15 @@ namespace ProjectileShooter
          */
         CEnvProjectile@ Fire()
         {
+            string szProjectileName = self.pev.targetname;
+            szProjectileName += "___p";
+
             dictionary dProjectile = {
                 {"origin",                  self.pev.origin.ToString()},
                 {"angles",                  self.pev.angles.ToString()},
+                {"targetname",              szProjectileName},
                 {"rendermode",              formatUInt(self.pev.rendermode)},
-                {"renderamt",               formatFloat(self.pev.renderamt)},
+                {"renderamt",               formatFloat(self.pev.renderamt          , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"rendercolor",             self.pev.rendercolor.ToString()},
                 {"renderfx",                formatUInt(self.pev.renderfx)},
                 {"model",                   m_szModel},
@@ -625,40 +632,40 @@ namespace ProjectileShooter
                 {"model_body",              formatUInt(m_iModelBody)},
                 {"model_sequencename",      m_szModelSequenceName},
                 {"model_sequence",          formatInt(m_iModelSequence)},
-                {"model_scale",             formatFloat(m_flModelScale)},
+                {"model_scale",             formatFloat(m_flModelScale              , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"sprite",                  m_szSprite},
-                {"sprite_framerate",        formatFloat(m_flSpriteFramerate)},
+                {"sprite_framerate",        formatFloat(m_flSpriteFramerate         , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"sprite_vp_type",          formatUInt(m_iSpriteVpType)},
-                {"sprite_scale",            formatFloat(m_flSpriteScale)},
+                {"sprite_scale",            formatFloat(m_flSpriteScale             , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"projectile_sound",        m_szSound},
-                {"projectile_sound_volume", formatFloat(m_flSoundVolume)},
-                {"projectile_sound_radius", formatFloat(m_flSoundRadius)},
+                {"projectile_sound_volume", formatFloat(m_flSoundVolume             , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"projectile_sound_radius", formatFloat(m_flSoundRadius             , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"projectile_minhullsize",  m_vecMins.ToString()},
                 {"projectile_maxhullsize",  m_vecMaxs.ToString()},
-                {"projectile_speed",        formatFloat(m_flSpeed)},
-                {"projectile_gravity",      formatFloat(m_flGravity)},
-                {"projectile_drag",         formatFloat(m_flDrag)},
-                {"projectile_dmg",          formatFloat(m_flDmg)},
-                {"projectile_armordmg",     formatFloat(m_flArmorDmg)},
+                {"projectile_speed",        formatFloat(m_flSpeed                   , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"projectile_gravity",      formatFloat(m_flGravity                 , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"projectile_drag",         formatFloat(m_flDrag                    , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"projectile_dmg",          formatFloat(m_flDmg                     , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"projectile_armordmg",     formatFloat(m_flArmorDmg                , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"projectile_damagetype",   formatUInt(m_iDamageType)},
                 {"fire_target",             m_szFireTarget},
                 {"fire_triggerstate",       formatUInt(m_iFireTriggerState)},
                 {"fire_sprite",             m_szFireSprite},
-                {"fire_sprite_framerate",   formatFloat(m_flFireSpriteFramerate)},
+                {"fire_sprite_framerate",   formatFloat(m_flFireSpriteFramerate     , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"fire_sprite_vp_type",     formatUInt(m_iFireSpriteVpType)},
-                {"fire_sprite_scale",       formatFloat(m_flFireSpriteScale)},
+                {"fire_sprite_scale",       formatFloat(m_flFireSpriteScale         , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"fire_sound",              m_szFireSound},
-                {"fire_sound_volume",       formatFloat(m_flFireSoundVolume)},
-                {"fire_sound_radius",       formatFloat(m_flFireSoundRadius)},
+                {"fire_sound_volume",       formatFloat(m_flFireSoundVolume         , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"fire_sound_radius",       formatFloat(m_flFireSoundRadius         , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"impact_target",           m_szImpactTarget},
                 {"impact_triggerstate",     formatUInt(m_iImpactTriggerState)},
                 {"impact_sprite",           m_szImpactSprite},
-                {"impact_sprite_framerate", formatFloat(m_flImpactSpriteFramerate)},
+                {"impact_sprite_framerate", formatFloat(m_flImpactSpriteFramerate   , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"impact_sprite_vp_type",   formatUInt(m_iImpactSpriteVpType)},
-                {"impact_sprite_scale",     formatFloat(m_flImpactSpriteScale)},
+                {"impact_sprite_scale",     formatFloat(m_flImpactSpriteScale       , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                 {"impact_sound",            m_szImpactSound},
-                {"impact_sound_volume",     formatFloat(m_flImpactSoundVolume)},
-                {"impact_sound_radius",     formatFloat(m_flImpactSoundRadius)}
+                {"impact_sound_volume",     formatFloat(m_flImpactSoundVolume       , "", 0, ProjectileShooter::FLOAT_PRECISION)},
+                {"impact_sound_radius",     formatFloat(m_flImpactSoundRadius       , "", 0, ProjectileShooter::FLOAT_PRECISION)}
             };
 
             CBaseEntity@ pProjectileBase = g_EntityFuncs.CreateEntity("env_projectile", dProjectile, false);
@@ -994,7 +1001,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "fire_sound") {
-                m_szFireTarget = szValue;
+                m_szFireSound = szValue;
                 return true;
             }
 
@@ -1039,7 +1046,7 @@ namespace ProjectileShooter
             }
 
             if (szKey == "impact_sound") {
-                m_szImpactTarget = szValue;
+                m_szImpactSound = szValue;
                 return true;
             }
 
@@ -1081,6 +1088,7 @@ namespace ProjectileShooter
 
             self.Precache();
 
+            // Set parent as the projectile shooter, if this came from one
             if (self.pev.owner !is null) {
                 CBaseEntity@ pShooterBase = g_EntityFuncs.Instance(self.pev.owner);
                 if (pShooterBase !is null) {
@@ -1090,22 +1098,7 @@ namespace ProjectileShooter
                 }
             }
 
-            Vector vecFireOrigin    = self.pev.origin;
-            Vector vecFireAngles    = self.pev.angles;
-            Vector vecFireDirection = g_Engine.v_forward;
-            Math.MakeVectors(vecFireAngles);
-
-            g_EntityFuncs.SetOrigin(self, vecFireOrigin);
-            g_EntityFuncs.SetSize(self.pev, m_vecMins, m_vecMaxs);
-            self.pev.angles         = vecFireAngles;
-            self.pev.velocity       = vecFireAngles * m_flSpeed;
-            self.pev.avelocity.z    = m_flSpeed;
-            self.pev.speed          = m_flSpeed;
-            self.pev.friction       = m_flDrag;
-            self.pev.gravity        = m_flGravity;
-            self.pev.movetype       = MOVETYPE_STEP;
-            self.pev.solid          = SOLID_NOT;
-
+            // Set model/sprite
             if (!m_szModel.IsEmpty()) {
                 g_EntityFuncs.SetModel(self, m_szModel);
                 self.pev.skin       = m_iModelSkin;
@@ -1117,21 +1110,48 @@ namespace ProjectileShooter
                 m_iSpriteFrames     = g_EngineFuncs.ModelFrames(g_EngineFuncs.ModelIndex(self.pev.model));
                 self.pev.frame      = 0.0f;
                 self.pev.framerate  = m_flSpriteFramerate;
+                self.pev.sequence   = 0;
+                if (m_iSpriteVpType != MAP_VP_DEFAULT) {
+                    self.pev.sequence = int(m_iSpriteVpType) - 1;
+                    self.pev.effects |= EF_SPRITE_CUSTOM_VP;
+                }
                 self.pev.scale      = m_flSpriteScale;
             }
 
+            // Set physics
+            Vector vecFireOrigin    = self.pev.origin;
+            Vector vecFireAngles    = self.pev.angles;
+            Math.MakeVectors(vecFireAngles);
+            Vector vecFireVelocity = g_Engine.v_forward * m_flSpeed;
+
+            g_EntityFuncs.SetOrigin(self, vecFireOrigin);
+            g_EntityFuncs.SetSize(self.pev, m_vecMins, m_vecMaxs);
+            self.pev.velocity       = vecFireVelocity;
+            self.pev.angles         = Math.VecToAngles(vecFireVelocity); // vecFireAngles;
+            self.pev.speed          = m_flSpeed;
+            self.pev.friction       = m_flDrag;
+            self.pev.gravity        = m_flGravity;
+            self.pev.movetype       = self.pev.gravity == 0.0f ? MOVETYPE_BOUNCEMISSILE : MOVETYPE_BOUNCE;
+            self.pev.solid          = SOLID_SLIDEBOX;
+
+            // Start sound
+            if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
+                g_SoundSystem.EmitSound(self.edict(), CHAN_VOICE, m_szSound, m_flSoundVolume, m_flSoundRadius);
+            }
+
+            // On fire: Sprite
             if (!m_szFireSprite.IsEmpty()) {
                 dictionary dFireSprite = {
                     {"origin",      self.pev.origin.ToString()},
                     {"angles",      self.pev.angles.ToString()},
                     {"rendermode",  formatUInt(kRenderTransAdd)},
-                    {"renderamt",   formatFloat(255.0f)},
+                    {"renderamt",   formatFloat(255.0f                      , "", 0, 0)},
                     {"rendercolor", g_vecZero.ToString()},
                     {"renderfx",    formatUInt(kRenderFxNone)},
                     {"model",       m_szFireSprite},
-                    {"framerate",   formatFloat(m_flFireSpriteFramerate)},
+                    {"framerate",   formatFloat(m_flFireSpriteFramerate     , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                     {"vp_type",     formatUInt(m_iFireSpriteVpType)},
-                    {"scale",       formatFloat(m_flFireSpriteScale)},
+                    {"scale",       formatFloat(m_flFireSpriteScale         , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                     {"spawnflags",  formatUInt(7)}
                 };
 
@@ -1141,21 +1161,20 @@ namespace ProjectileShooter
                 g_EntityFuncs.DispatchSpawn(pFireSprite.edict());
             }
 
+            // On fire: Sound
             if (!m_szFireSound.IsEmpty() and m_flFireSoundVolume > 0.0f) {
                 g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szFireSound, m_flFireSoundVolume, m_flFireSoundRadius);
             }
 
+            // On fire: Trigger
             if (!m_szFireTarget.IsEmpty()) {
                 g_EntityFuncs.FireTargets(m_szFireTarget, cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iFireTriggerState);
             }
 
-            if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
-                g_SoundSystem.EmitSound(self.edict(), CHAN_VOICE, m_szSound, m_flSoundVolume, m_flSoundRadius);
-            }
-
+            // Prepare think
+            m_flFired = m_flLastThink = self.pev.nextthink = g_Engine.time;
             SetThink(ThinkFunction(this.Think));
             SetTouch(TouchFunction(this.Touch));
-            m_flFired = m_flLastThink = self.pev.nextthink = g_Engine.time;
         }
 
         /**
@@ -1208,17 +1227,13 @@ namespace ProjectileShooter
          */
         void Think()
         {
-            if (self.pev.solid == SOLID_NOT) {
-                self.pev.solid = SOLID_BBOX;
-                /*
-                if (m_flFired < 0.0f or g_Engine.time - m_flFired >= (1 / ProjectileShooter::MAX_FPS)) {
-                }
-                 */
-            }
-
             self.pev.nextthink = (1 / ProjectileShooter::MAX_FPS);
 
-            if (m_iSpriteFrames >= 1) {
+            if (!m_szModel.IsEmpty()) {
+                self.StudioFrameAdvance();
+            }
+
+            if (!m_szSprite.IsEmpty() && m_iSpriteFrames >= 1) {
                 // Animate sprite
                 if (m_iSpriteFrames >= 2) {
                     self.pev.frame = self.pev.framerate * (g_Engine.time - m_flLastThink);
@@ -1249,22 +1264,24 @@ namespace ProjectileShooter
          */
         void Touch(CBaseEntity@ pOther)
         {
+            // Stop sound
             if (!m_szSound.IsEmpty() and m_flSoundVolume > 0.0f) {
                 g_SoundSystem.StopSound(self.edict(), CHAN_VOICE, m_szSound);
             }
 
+            // On impact: Sprite
             if (!m_szImpactSprite.IsEmpty()) {
                 dictionary dImpactSprite = {
                     {"origin",      self.pev.origin.ToString()},
                     {"angles",      self.pev.angles.ToString()},
                     {"rendermode",  formatUInt(kRenderTransAdd)},
-                    {"renderamt",   formatFloat(255.0f)},
+                    {"renderamt",   formatFloat(255.0f                      , "", 0, 0)},
                     {"rendercolor", g_vecZero.ToString()},
                     {"renderfx",    formatUInt(kRenderFxNone)},
                     {"model",       m_szImpactSprite},
-                    {"framerate",   formatFloat(m_flImpactSpriteFramerate)},
+                    {"framerate",   formatFloat(m_flImpactSpriteFramerate   , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                     {"vp_type",     formatUInt(m_iImpactSpriteVpType)},
-                    {"scale",       formatFloat(m_flImpactSpriteScale)},
+                    {"scale",       formatFloat(m_flImpactSpriteScale       , "", 0, ProjectileShooter::FLOAT_PRECISION)},
                     {"spawnflags",  formatUInt(7)}
                 };
 
@@ -1274,51 +1291,62 @@ namespace ProjectileShooter
                 g_EntityFuncs.DispatchSpawn(pImpactSprite.edict());
             }
 
+            // On impact: Sound
             if (!m_szImpactSound.IsEmpty() and m_flImpactSoundVolume > 0.0f) {
                 g_SoundSystem.EmitSound(self.edict(), CHAN_AUTO, m_szImpactSound, m_flImpactSoundVolume, m_flImpactSoundRadius);
             }
 
+            // On impact: Trigger
             if (!m_szImpactTarget.IsEmpty()) {
                 g_EntityFuncs.FireTargets(m_szImpactTarget, cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
             }
 
+            // Damage
             TraceResult tr;
-            g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
-            Damage(pOther, tr);
+            if (pOther !is null and pOther.pev.takedamage != DAMAGE_NO) {
+                // Hit an entity
+                g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
+                if (g_EntityFuncs.Instance(tr.pHit) == pOther) {
+                    // Health
+                    if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
+                        if (m_flDmg >= 0.0f) {
+                            g_WeaponFuncs.ClearMultiDamage();
+                            pOther.TraceAttack(self.pev.owner.vars, m_flDmg, self.pev.velocity, tr, m_iDamageType);
+                            g_WeaponFuncs.ApplyMultiDamage(self.pev, self.pev.owner.vars);
+                        } else {
+                            pOther.TakeHealth(-m_flDmg, m_iDamageType);
+                        }
+                    }
 
-            self.pev.velocity = g_vecZero;
+                    // Armor
+                    if (m_flArmorDmg != 0.0f) {
+                        if (m_flArmorDmg >= 0.0f) {
+                            pOther.pev.armorvalue = Math.max(pOther.pev.armorvalue - m_flArmorDmg, 0);
+                        } else {
+                            pOther.pev.armorvalue = Math.min(pOther.pev.armorvalue - m_flArmorDmg, pOther.pev.armortype);
+                        }
+                    }
+                }
+            } else {
+                // Hit a solid
+                if (tr.flFraction != 1.0) {
+                    pev.origin = tr.vecEndPos + (tr.vecPlaneNormal * m_flDmg * 0.3);
+                }
+            }
+
+
+            // Destroy
+            self.pev.velocity   = g_vecZero;
+            self.pev.speed      = m_flSpeed;
+            self.pev.friction   = m_flDrag;
+            self.pev.gravity    = m_flGravity;
+            self.pev.movetype   = MOVETYPE_NONE;
+            self.pev.solid      = SOLID_NOT;
+
             SetTouch(null);
             SetThink(null);
+
             g_EntityFuncs.Remove(self);
-        }
-
-        void Damage(CBaseEntity@ pHit, TraceResult tr)
-        {
-            if (pHit is null or pHit.pev.takedamage == DAMAGE_NO) {
-                return;
-            }
-
-            if (g_EntityFuncs.Instance(tr.pHit) != pHit) {
-                return;
-            }
-
-            if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
-                if (m_flDmg >= 0.0f) {
-                    g_WeaponFuncs.ClearMultiDamage();
-                    pHit.TraceAttack(self.pev.owner.vars, m_flDmg, self.pev.velocity, tr, m_iDamageType);
-                    g_WeaponFuncs.ApplyMultiDamage(self.pev, self.pev.owner.vars);
-                } else {
-                    pHit.TakeHealth(-m_flDmg, m_iDamageType);
-                }
-            }
-
-            if (m_flArmorDmg != 0.0f) {
-                if (m_flArmorDmg >= 0.0f) {
-                    pHit.pev.armorvalue = Math.max(pHit.pev.armorvalue - m_flArmorDmg, 0);
-                } else {
-                    pHit.pev.armorvalue = Math.min(pHit.pev.armorvalue - m_flArmorDmg, pHit.pev.armortype);
-                }
-            }
         }
     }
 }
