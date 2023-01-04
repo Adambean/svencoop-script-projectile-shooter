@@ -164,7 +164,7 @@ namespace ProjectileShooter
         float m_flSpeed = 16.0;
 
         /** @var float m_flGravity Projectile: Gravity. (Relative to world.) */
-        float m_flGravity = 1.0;
+        float m_flGravity = 0.0;
 
         /** @var float m_flDrag Projectile: Drag. */
         float m_flDrag = 1.0;
@@ -316,57 +316,57 @@ namespace ProjectileShooter
                 return true;
             }
 
-            if (szKey == "sound") {
+            if (szKey == "projectile_sound") {
                 m_szSound = szValue;
                 return true;
             }
 
-            if (szKey == "sound_volume") {
+            if (szKey == "projectile_sound_volume") {
                 m_flSoundVolume = Math.min(1.0f, Math.max(0.0f, atof(szValue)));
                 return true;
             }
 
-            if (szKey == "sound_radius") {
+            if (szKey == "projectile_sound_radius") {
                 m_flSoundRadius = ProjectileShooter::SoundRadiusOptionToAttenuation(atoi(szValue));
                 return true;
             }
 
-            if (szKey == "minhullsize") {
+            if (szKey == "projectile_minhullsize") {
                 g_Utility.StringToVector(m_vecMins, szValue);
                 return true;
             }
 
-            if (szKey == "maxhullsize") {
+            if (szKey == "projectile_maxhullsize") {
                 g_Utility.StringToVector(m_vecMaxs, szValue);
                 return true;
             }
 
-            if (szKey == "speed") {
+            if (szKey == "projectile_speed") {
                 m_flSpeed = atof(szValue);
                 return true;
             }
 
-            if (szKey == "gravity") {
+            if (szKey == "projectile_gravity") {
                 m_flGravity = atof(szValue);
                 return true;
             }
 
-            if (szKey == "drag") {
+            if (szKey == "projectile_drag") {
                 m_flDrag = atof(szValue);
                 return true;
             }
 
-            if (szKey == "dmg") {
+            if (szKey == "projectile_dmg") {
                 m_flDmg = atof(szValue); // Minus numbers allowed to heal/repair
                 return true;
             }
 
-            if (szKey == "armordmg") {
+            if (szKey == "projectile_armordmg") {
                 m_flArmorDmg = atof(szValue); // Minus numbers allowed to heal/repair
                 return true;
             }
 
-            if (szKey == "damagetype") {
+            if (szKey == "projectile_damagetype") {
                 m_iDamageType = DMG(atoi(szValue));
                 return true;
             }
@@ -630,17 +630,17 @@ namespace ProjectileShooter
                 {"sprite_framerate",        formatFloat(m_flSpriteFramerate)},
                 {"sprite_vp_type",          formatUInt(m_iSpriteVpType)},
                 {"sprite_scale",            formatFloat(m_flSpriteScale)},
-                {"sound",                   m_szSound},
-                {"sound_volume",            formatFloat(m_flSoundVolume)},
-                {"sound_radius",            formatFloat(m_flSoundRadius)},
-                {"minhullsize",             m_vecMins.ToString()},
-                {"maxhullsize",             m_vecMaxs.ToString()},
-                {"speed",                   formatFloat(m_flSpeed)},
-                {"gravity",                 formatFloat(m_flGravity)},
-                {"drag",                    formatFloat(m_flDrag)},
-                {"dmg",                     formatFloat(m_flDmg)},
-                {"armordmg",                formatFloat(m_flArmorDmg)},
-                {"damagetype",              formatUInt(m_iDamageType)},
+                {"projectile_sound",        m_szSound},
+                {"projectile_sound_volume", formatFloat(m_flSoundVolume)},
+                {"projectile_sound_radius", formatFloat(m_flSoundRadius)},
+                {"projectile_minhullsize",  m_vecMins.ToString()},
+                {"projectile_maxhullsize",  m_vecMaxs.ToString()},
+                {"projectile_speed",        formatFloat(m_flSpeed)},
+                {"projectile_gravity",      formatFloat(m_flGravity)},
+                {"projectile_drag",         formatFloat(m_flDrag)},
+                {"projectile_dmg",          formatFloat(m_flDmg)},
+                {"projectile_armordmg",     formatFloat(m_flArmorDmg)},
+                {"projectile_damagetype",   formatUInt(m_iDamageType)},
                 {"fire_target",             m_szFireTarget},
                 {"fire_triggerstate",       formatUInt(m_iFireTriggerState)},
                 {"fire_sprite",             m_szFireSprite},
@@ -761,7 +761,7 @@ namespace ProjectileShooter
         float m_flSpeed = 16.0;
 
         /** @var float m_flGravity Projectile: Gravity. (Relative to world.) */
-        float m_flGravity = 1.0;
+        float m_flGravity = 0.0;
 
         /** @var float m_flDrag Projectile: Drag. */
         float m_flDrag = 1.0;
@@ -908,57 +908,57 @@ namespace ProjectileShooter
                 return true;
             }
 
-            if (szKey == "sound") {
+            if (szKey == "projectile_sound") {
                 m_szSound = szValue;
                 return true;
             }
 
-            if (szKey == "sound_volume") {
+            if (szKey == "projectile_sound_volume") {
                 m_flSoundVolume = Math.min(1.0f, Math.max(0.0f, atof(szValue)));
                 return true;
             }
 
-            if (szKey == "sound_radius") {
+            if (szKey == "projectile_sound_radius") {
                 m_flSoundRadius = ProjectileShooter::SoundRadiusOptionToAttenuation(atoi(szValue));
                 return true;
             }
 
-            if (szKey == "minhullsize") {
+            if (szKey == "projectile_minhullsize") {
                 g_Utility.StringToVector(m_vecMins, szValue);
                 return true;
             }
 
-            if (szKey == "maxhullsize") {
+            if (szKey == "projectile_maxhullsize") {
                 g_Utility.StringToVector(m_vecMaxs, szValue);
                 return true;
             }
 
-            if (szKey == "speed") {
+            if (szKey == "projectile_speed") {
                 m_flSpeed = atof(szValue);
                 return true;
             }
 
-            if (szKey == "gravity") {
+            if (szKey == "projectile_gravity") {
                 m_flGravity = atof(szValue);
                 return true;
             }
 
-            if (szKey == "drag") {
+            if (szKey == "projectile_drag") {
                 m_flDrag = atof(szValue);
                 return true;
             }
 
-            if (szKey == "dmg") {
+            if (szKey == "projectile_dmg") {
                 m_flDmg = atof(szValue); // Minus numbers allowed to heal/repair
                 return true;
             }
 
-            if (szKey == "armordmg") {
+            if (szKey == "projectile_armordmg") {
                 m_flArmorDmg = atof(szValue); // Minus numbers allowed to heal/repair
                 return true;
             }
 
-            if (szKey == "damagetype") {
+            if (szKey == "projectile_damagetype") {
                 m_iDamageType = DMG(atoi(szValue));
                 return true;
             }
@@ -1101,6 +1101,7 @@ namespace ProjectileShooter
             self.pev.velocity       = vecFireAngles * m_flSpeed;
             self.pev.avelocity.z    = m_flSpeed;
             self.pev.speed          = m_flSpeed;
+            self.pev.friction       = m_flDrag;
             self.pev.gravity        = m_flGravity;
             self.pev.movetype       = MOVETYPE_STEP;
             self.pev.solid          = SOLID_NOT;
@@ -1208,9 +1209,11 @@ namespace ProjectileShooter
         void Think()
         {
             if (self.pev.solid == SOLID_NOT) {
+                self.pev.solid = SOLID_BBOX;
+                /*
                 if (m_flFired < 0.0f or g_Engine.time - m_flFired >= (1 / ProjectileShooter::MAX_FPS)) {
-                    self.pev.solid = SOLID_BBOX;
                 }
+                 */
             }
 
             self.pev.nextthink = (1 / ProjectileShooter::MAX_FPS);
@@ -1226,6 +1229,15 @@ namespace ProjectileShooter
 
                 self.pev.nextthink = g_Engine.time + Math.min((1 / self.pev.framerate), (1 / ProjectileShooter::MAX_FPS));
             }
+
+            /*
+            int iDmgCheck = Math.floor(g_Engine.time * 100) % 5;
+            if (iDmgCheck < 1) {
+                TraceResult tr;
+                g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
+                Damage(pOther, tr);
+            }
+             */
 
             m_flLastThink = g_Engine.time;
         }
@@ -1270,37 +1282,43 @@ namespace ProjectileShooter
                 g_EntityFuncs.FireTargets(m_szImpactTarget, cast<CBaseEntity@>(this), cast<CBaseEntity@>(this), m_iImpactTriggerState);
             }
 
-            if (pOther !is null and pOther.pev.takedamage != DAMAGE_NO) {
-                entvars_t@ pevOwner = self.pev.owner.vars;
-                TraceResult tr;
-                g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
-                CBaseEntity@ pHit = g_EntityFuncs.Instance(tr.pHit);
+            TraceResult tr;
+            g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
+            Damage(pOther, tr);
 
-                if (pHit == pOther) {
-                    if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
-                        if (m_flDmg >= 0.0f) {
-                            g_WeaponFuncs.ClearMultiDamage();
-                            pHit.TraceAttack(pevOwner, m_flDmg, self.pev.velocity, tr, m_iDamageType);
-                            g_WeaponFuncs.ApplyMultiDamage(self.pev, pevOwner);
-                        } else {
-                            pHit.TakeHealth(-m_flDmg, m_iDamageType);
-                        }
-                    }
-
-                    if (m_flArmorDmg != 0.0f) {
-                        if (m_flArmorDmg >= 0.0f) {
-                            pHit.pev.armorvalue = Math.max(pHit.pev.armorvalue - m_flArmorDmg, 0);
-                        } else {
-                            pHit.pev.armorvalue = Math.min(pHit.pev.armorvalue - m_flArmorDmg, pHit.pev.armortype);
-                        }
-                    }
-                }
-            }
-
-            self.pev.velocity = g_vecZero;;
+            self.pev.velocity = g_vecZero;
             SetTouch(null);
             SetThink(null);
             g_EntityFuncs.Remove(self);
+        }
+
+        void Damage(CBaseEntity@ pHit, TraceResult tr)
+        {
+            if (pHit is null or pHit.pev.takedamage == DAMAGE_NO) {
+                return;
+            }
+
+            if (g_EntityFuncs.Instance(tr.pHit) != pHit) {
+                return;
+            }
+
+            if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
+                if (m_flDmg >= 0.0f) {
+                    g_WeaponFuncs.ClearMultiDamage();
+                    pHit.TraceAttack(self.pev.owner.vars, m_flDmg, self.pev.velocity, tr, m_iDamageType);
+                    g_WeaponFuncs.ApplyMultiDamage(self.pev, self.pev.owner.vars);
+                } else {
+                    pHit.TakeHealth(-m_flDmg, m_iDamageType);
+                }
+            }
+
+            if (m_flArmorDmg != 0.0f) {
+                if (m_flArmorDmg >= 0.0f) {
+                    pHit.pev.armorvalue = Math.max(pHit.pev.armorvalue - m_flArmorDmg, 0);
+                } else {
+                    pHit.pev.armorvalue = Math.min(pHit.pev.armorvalue - m_flArmorDmg, pHit.pev.armortype);
+                }
+            }
         }
     }
 }

@@ -27,9 +27,9 @@
 	]
 	sprite_scale(string) : "Projectile: Sprite Scale" : "1"
 
-	sound(sound) : "Projectile: Sound"
-	sound_volume(integer) : "Projectile: Sound Volume (10 = loudest)" : 10
-	sound_radius(choices) : "Projectile: Sound Radius" : 2 =
+	projectile_sound(sound) : "Projectile: Sound"
+	projectile_sound_volume(integer) : "Projectile: Sound Volume (10 = loudest)" : 10
+	projectile_sound_radius(choices) : "Projectile: Sound Radius" : 2 =
 	[
 		1 : "Small (~384)"
 		2 : "Medium (~768)"
@@ -37,14 +37,14 @@
 		0 : "Everywhere"
 	]
 
-	minhullsize(string) : "Projectile: Min hull size (X Y Z)" : "0 0 0"
-	maxhullsize(string) : "Projectile: Max hull size (X Y Z)" : "0 0 0"
-	speed(integer) : "Projectile: Speed (units per second)" : 64
-	gravity(string) : "Projectile: Gravity" : "1"
-	drag(string) : "Projectile: Drag" : "1"
-	dmg(integer) : "Projectile: Damage" : 10
-	armordmg(integer) : "Projectile: Armor Damage" : 0
-	damagetype(choices) : "Projectile: Damage Type" : 0 =
+	projectile_minhullsize(string) : "Projectile: Min hull size (X Y Z)" : "0 0 0"
+	projectile_maxhullsize(string) : "Projectile: Max hull size (X Y Z)" : "0 0 0"
+	projectile_speed(integer) : "Projectile: Speed (units per second)" : 64
+	projectile_gravity(string) : "Projectile: Gravity" : "1"
+	projectile_drag(string) : "Projectile: Drag" : "1"
+	projectile_dmg(integer) : "Projectile: Damage" : 10
+	projectile_armordmg(integer) : "Projectile: Armor Damage" : 0
+	projectile_damagetype(choices) : "Projectile: Damage Type" : 0 =
 	[
 		0 : "GENERIC"
 		1 : "CRUSH"
