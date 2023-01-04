@@ -28,6 +28,9 @@ namespace ProjectileShooter
     /** @const int When timed mode is enabled, start firing immediately. */
     const int SF_TIMED_START_ON = 1<<1;
 
+    /** @const float Maximum frame rate. (This must be no higher than the game's built-in FPS ceiling. Do not increase!) */
+    const float MAX_FPS = 200.0f;
+
     /**
      * Initialise.
      * @return void
@@ -677,12 +680,29 @@ namespace ProjectileShooter
     {
         /*
         ------------------------------------------------------------------------
-            Variables
+            Runtime variables
         ------------------------------------------------------------------------
          */
 
         /** @var CFuncProjectileShooter@|null m_pParent Projectile shooter entity. */
         CFuncProjectileShooter@ m_pParent;
+
+        /** @var float m_flFired When this projectile was fired. (Spawned.) */
+        float m_flFired = -1.0f;
+
+        /** @var float m_flLastThink When this projectile last "thinked". */
+        float m_flLastThink = 0.0f;
+
+        /** @var int m_iSpriteFrames Number of frames the sprite has. */
+        int m_iSpriteFrames = 0;
+
+
+
+        /*
+        ------------------------------------------------------------------------
+            Map variables
+        ------------------------------------------------------------------------
+         */
 
         // Model
 
@@ -1083,7 +1103,7 @@ namespace ProjectileShooter
             self.pev.speed          = m_flSpeed;
             self.pev.gravity        = m_flGravity;
             self.pev.movetype       = MOVETYPE_STEP;
-            self.pev.solid          = SOLID_BBOX;
+            self.pev.solid          = SOLID_NOT;
 
             if (!m_szModel.IsEmpty()) {
                 g_EntityFuncs.SetModel(self, m_szModel);
@@ -1093,6 +1113,8 @@ namespace ProjectileShooter
                 self.pev.scale      = m_flModelScale;
             } else if (!m_szSprite.IsEmpty()) {
                 g_EntityFuncs.SetModel(self, m_szSprite);
+                m_iSpriteFrames     = g_EngineFuncs.ModelFrames(g_EngineFuncs.ModelIndex(self.pev.model));
+                self.pev.frame      = 0.0f;
                 self.pev.framerate  = m_flSpriteFramerate;
                 self.pev.scale      = m_flSpriteScale;
             }
@@ -1132,7 +1154,7 @@ namespace ProjectileShooter
 
             SetThink(ThinkFunction(this.Think));
             SetTouch(TouchFunction(this.Touch));
-            self.pev.nextthink = g_Engine.time + 0.1;
+            m_flFired = m_flLastThink = self.pev.nextthink = g_Engine.time;
         }
 
         /**
@@ -1185,7 +1207,27 @@ namespace ProjectileShooter
          */
         void Think()
         {
-            self.pev.nextthink = g_Engine.time + 0.1;
+            if (self.pev.solid == SOLID_NOT) {
+                if (m_flFired < 0.0f or g_Engine.time - m_flFired >= (1 / ProjectileShooter::MAX_FPS)) {
+                    self.pev.solid = SOLID_BBOX;
+                }
+            }
+
+            self.pev.nextthink = (1 / ProjectileShooter::MAX_FPS);
+
+            if (m_iSpriteFrames >= 1) {
+                // Animate sprite
+                if (m_iSpriteFrames >= 2) {
+                    self.pev.frame = self.pev.framerate * (g_Engine.time - m_flLastThink);
+                    if (Math.Floor(self.pev.frame) > m_iSpriteFrames) {
+                        self.pev.frame = self.pev.frame % m_iSpriteFrames;
+                    }
+                }
+
+                self.pev.nextthink = g_Engine.time + Math.min((1 / self.pev.framerate), (1 / ProjectileShooter::MAX_FPS));
+            }
+
+            m_flLastThink = g_Engine.time;
         }
 
         /**
@@ -1229,24 +1271,28 @@ namespace ProjectileShooter
             }
 
             if (pOther !is null and pOther.pev.takedamage != DAMAGE_NO) {
-                TraceResult tr = g_Utility.GetGlobalTrace();
                 entvars_t@ pevOwner = self.pev.owner.vars;
+                TraceResult tr;
+                g_Utility.TraceLine(self.pev.origin, pOther.pev.origin, dont_ignore_monsters, self.edict(), tr);
+                CBaseEntity@ pHit = g_EntityFuncs.Instance(tr.pHit);
 
-                if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
-                    if (m_flDmg > 0.0f) {
-                        g_WeaponFuncs.ClearMultiDamage();
-                        pOther.TraceAttack(pevOwner, m_flDmg, self.pev.velocity.Normalize(), tr, m_iDamageType);
-                        g_WeaponFuncs.ApplyMultiDamage(self.pev, pevOwner);
-                    } else {
-                        pOther.TakeHealth(-m_flDmg, m_iDamageType);
+                if (pHit == pOther) {
+                    if (m_iDamageType != DMG_GENERIC or m_flDmg != 0.0f) {
+                        if (m_flDmg >= 0.0f) {
+                            g_WeaponFuncs.ClearMultiDamage();
+                            pHit.TraceAttack(pevOwner, m_flDmg, self.pev.velocity, tr, m_iDamageType);
+                            g_WeaponFuncs.ApplyMultiDamage(self.pev, pevOwner);
+                        } else {
+                            pHit.TakeHealth(-m_flDmg, m_iDamageType);
+                        }
                     }
-                }
 
-                if (m_flArmorDmg != 0.0f) {
-                    if (m_flArmorDmg > 0.0f) {
-                        pOther.pev.armorvalue = Math.max(pOther.pev.armorvalue - m_flArmorDmg, 0);
-                    } else {
-                        pOther.pev.armorvalue = Math.min(pOther.pev.armorvalue - m_flArmorDmg, pOther.pev.armortype);
+                    if (m_flArmorDmg != 0.0f) {
+                        if (m_flArmorDmg >= 0.0f) {
+                            pHit.pev.armorvalue = Math.max(pHit.pev.armorvalue - m_flArmorDmg, 0);
+                        } else {
+                            pHit.pev.armorvalue = Math.min(pHit.pev.armorvalue - m_flArmorDmg, pHit.pev.armortype);
+                        }
                     }
                 }
             }
