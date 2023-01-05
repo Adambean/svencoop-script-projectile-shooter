@@ -4,6 +4,8 @@ This script implements an entity for use in maps, `func_projectile_shooter`, whi
 
 The projectiles can consist of a model or sprite, a sound for travel, firing, and impact, specific speed and weight, damage on impact, and triggers on firing and impact, and lots more.
 
+**This script requires Sven Co-op version 5.26 or later.**
+
 ## Installation
 
 This script needs to be at game path "scripts/maps/projectile_shooter". Then in a map do **one** of the following:
